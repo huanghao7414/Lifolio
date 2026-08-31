@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Lifolio",
+    "slug": "lifolio",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "lifolio",
+    "splash": {
+      "backgroundColor": "#FFFFFF"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.lifolio.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "用于拍摄小票和物品照片",
+        "NSMicrophoneUsageDescription": "用于语音输入记账",
+        "NSSpeechRecognitionUsageDescription": "用于语音识别"
+      }
+    },
+    "android": {
+      "package": "com.lifolio.app",
+      "permissions": ["CAMERA", "RECORD_AUDIO"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-camera",
+      "expo-image-picker",
+      [
+        "expo-speech",
+        { "microphonePermission": "用于语音输入记账" }
+      ]
+    ],
+    "extra": {
+      "eas": { "projectId": "your-eas-project-id" }
+    }
+  }
+}
