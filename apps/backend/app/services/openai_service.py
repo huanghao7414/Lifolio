@@ -12,7 +12,10 @@ _client: AsyncOpenAI | None = None
 def get_openai() -> AsyncOpenAI:
     global _client
     if _client is None:
-        _client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        kwargs: dict = {"api_key": settings.effective_api_key}
+        if settings.LLM_BASE_URL:
+            kwargs["base_url"] = settings.LLM_BASE_URL
+        _client = AsyncOpenAI(**kwargs)
     return _client
 
 
