@@ -1,0 +1,79 @@
+/* 自动生成，请勿手改 —— 源：packages/tokens/tokens.json */
+/* 生成命令：node packages/tokens/scripts/build-css.mjs */
+:root {
+  /* ── 颜色 ── */
+  --color-ink-1: #1D1D1F; /* 主文字 / 金额，白底 16.1:1 AAA */
+  --color-ink-2: #6E6E73; /* 次级文字，白底 5.07:1 AA */
+  --color-ink-3: #A1A1A6; /* 图标描边 / 占位，2.57:1，仅非文本 */
+  --color-line: #E5E5EA; /* 分隔线 / 卡片描边 */
+  --color-track: #F0F0F2; /* 进度轨道 / 骨架屏 */
+  --color-surface: #FFFFFF; /* 卡片 / 栏底 */
+  --color-canvas: #F5F5F7; /* 页面底色 */
+  --color-accent: #FF4500; /* 图形填充 / ≥24px 大号数字，3.44:1，限非文本与大字 */
+  --color-accent-strong: #D63600; /* 主按钮底 / 白字压其上 4.79:1 AA */
+  --color-accent-text: #C03400; /* 强调文字 / 链接，5.63:1 AA */
+  --color-accent-soft: #FFE8DD; /* Chip / 徽标底，配 accent.text 4.78:1 */
+  --color-accent-wash: #FFF3E8; /* AI 卡片底，配 #7A4E2E 6.51:1 */
+  --color-accent-line: #FFCDB8; /* AI 卡片描边 / 预测区间 */
+  --color-accent-ink: #7A4E2E; /* AI 卡片正文，accent.wash 上 6.51:1 */
+  --color-success: #1E7A34; /* 正向 / 达标，5.40:1 AA */
+  --color-success-soft: #E6F4EA; /* 成功态浅底 */
+  --color-warning: #B25E00; /* 提醒 / 接近阈值，4.63:1 AA */
+  --color-warning-soft: #FFF1E0; /* 提醒态浅底 */
+  --color-danger: #D63600; /* 预警 / 超支，4.79:1 AA */
+  --color-danger-soft: #FFE8DD; /* 预警态浅底 */
+  --color-info: #0B6BCB; /* 说明 / 状态，4.86:1 AA */
+  --color-info-soft: #E8F2FD; /* 信息态浅底 */
+  --color-ai-canvas: #0D0D0F; /* AI 专注面板底色 */
+  --color-ai-surface: #1A1A1C; /* AI 气泡 / 输入栏 */
+  --color-ai-elevated: #262629; /* 用户气泡 */
+  --color-ai-text: #F5F5F7; /* 面板主文字，16.0:1 */
+  --color-ai-sub: #A1A1A6; /* 面板次级文字，7.59:1 */
+
+  /* ── 圆角 ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-card: 20px;
+  --radius-sheet: 28px;
+  --radius-full: 999px;
+
+  /* ── 阴影 / 层级 ── */
+  --shadow-1: 0 1px 2px rgba(0,0,0,.04), 0 1px 3px rgba(0,0,0,.03);
+  --shadow-2: 0 4px 12px rgba(0,0,0,.05), 0 1px 3px rgba(0,0,0,.04);
+  --shadow-3: 0 12px 32px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.04);
+  --shadow-focus: 0 0 0 3px rgba(255,69,0,.28);
+
+  /* ── 字阶 ── */
+  --text-display: 34px;
+  --leading-display: 40px;
+  --tracking-display: -0.8px;
+  --text-h1: 28px;
+  --leading-h1: 34px;
+  --tracking-h1: -0.6px;
+  --text-h2: 22px;
+  --leading-h2: 28px;
+  --tracking-h2: -0.4px;
+  --text-h3: 17px;
+  --leading-h3: 24px;
+  --tracking-h3: -0.2px;
+  --text-body: 15px;
+  --leading-body: 22px;
+  --text-callout: 14px;
+  --leading-callout: 20px;
+  --text-subhead: 13px;
+  --leading-subhead: 18px;
+  --text-caption: 12px;
+  --leading-caption: 16px;
+  --text-micro: 11px;
+  --leading-micro: 14px;
+  --tracking-micro: 0.2px;
+
+  /* ── 动效 ── */
+  --motion-fast: 120ms cubic-bezier(.2,0,1,1);
+  --motion-base: 200ms cubic-bezier(.2,0,1,1);
+  --motion-slow: 320ms cubic-bezier(.2,0,1,1);
+
+  /* ── 触控 ── */
+  --touch-min: 44px;
+}

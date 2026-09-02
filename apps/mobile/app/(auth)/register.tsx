@@ -43,7 +43,7 @@ export default function RegisterScreen() {
         </View>
 
         <Pressable onPress={() => router.back()} style={styles.switchLink}>
-          <Text style={styles.switchText}>已有账户？<Text style={{ color: Colors.brand }}>登录</Text></Text>
+          <Text style={styles.switchText}>已有账户？<Text style={{ color: Colors.brandText }}>登录</Text></Text>
         </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>

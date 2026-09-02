@@ -46,17 +46,17 @@ export default function OverviewCard({ monthlySpend, budget, savingsRate }: Prop
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: '#1A1A1A', borderRadius: 20, padding: 20, gap: 12 },
+  card: { backgroundColor: Colors.aiSurface, borderRadius: 20, padding: 20, gap: 12 },
   top: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
-  label: { fontSize: 13, color: 'rgba(255,255,255,0.5)' },
-  hint: { fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 2 },
+  label: { fontSize: 13, color: Colors.aiSub },
+  hint: { fontSize: 11, color: Colors.aiSub, marginTop: 2, fontVariant: ['tabular-nums'] },
   badge: { backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 },
-  badgeText: { fontSize: 11, color: 'rgba(255,255,255,0.6)' },
-  amount: { fontSize: 40, fontWeight: '700', color: '#fff' },
-  progressTrack: { height: 4, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 2, overflow: 'hidden' },
-  progressFill: { height: '100%', backgroundColor: Colors.brand, borderRadius: 2 },
+  badgeText: { fontSize: 11, color: Colors.aiSub },
+  amount: { fontSize: 40, fontWeight: '700', color: Colors.aiText, fontVariant: ['tabular-nums'] },
+  progressTrack: { height: 6, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 3, overflow: 'hidden' },
+  progressFill: { height: '100%', backgroundColor: Colors.brandAccent, borderRadius: 3 },
   divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.08)' },
   stats: { flexDirection: 'row' },
-  statLabel: { fontSize: 11, color: 'rgba(255,255,255,0.4)' },
-  statValue: { fontSize: 16, fontWeight: '600', color: '#fff', marginTop: 2 },
+  statLabel: { fontSize: 11, color: Colors.aiSub },
+  statValue: { fontSize: 16, fontWeight: '600', color: Colors.aiText, marginTop: 2, fontVariant: ['tabular-nums'] },
 });

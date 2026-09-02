@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import '@lifolio/tokens/tokens.css';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body className="bg-white text-[#1D1D1F] antialiased">{children}</body>
+      <body className="bg-canvas text-ink-1 antialiased">{children}</body>
     </html>
   );
 }

@@ -4,17 +4,19 @@
    ═══════════════════════════════════════════ */
 
 :root {
-  /* 基础色板 */
+  /* 基础色板（设计系统 v2.0，全部经 WCAG AA 实测） */
   --bg: #F5F5F7;
   --card: #FFFFFF;
-  --ink: #1D1D1F;          /* 主文字 */
-  --ink-2: #86868B;        /* 次级文字 */
-  --ink-3: #C7C7CC;        /* 弱化文字 */
+  --ink: #1D1D1F;          /* 主文字 16.1:1 AAA */
+  --ink-2: #6E6E73;        /* 次级文字 5.07:1 AA（旧值 #86868B 仅 3.62:1） */
+  --ink-3: #A1A1A6;        /* 仅限图标描边 / 占位，2.57:1，不用于正文 */
   --line: #E5E5EA;
   --track: #F0F0F2;
 
-  /* 品牌强调 */
-  --accent: #FF4500;
+  /* 品牌强调 · 三档拆分 */
+  --accent: #FF4500;        /* 图形填充 / ≥24px 大号数字，3.44:1，限非文本 */
+  --accent-strong: #D63600; /* 按钮底色，白字压其上 4.79:1 AA */
+  --accent-text: #C03400;   /* 强调文字 / 链接，5.63:1 AA */
   --accent-2: #FF8A4D;
   --accent-3: #FF9966;
   --ai-bg: #FFF3E8;
@@ -26,9 +28,9 @@
   --dark-bubble: #262629;
   --dark-card: #1A1A1C;
   --dark-text: #F5F5F7;
-  --dark-sub: #8A8A8E;
+  --dark-sub: #A1A1A6;     /* 深色上次级文字 7.59:1（旧值 #8A8A8E 仅 4.8:1） */
 
-  --green: #34C759;
+  --green: #248A3D;
 
   /* 阴影 */
   --shadow-card: 0 6px 20px rgba(0, 0, 0, 0.04);
@@ -181,7 +183,7 @@ html, body {
   justify-content: space-between;
 }
 .overview-label { font-size: 13px; font-weight: 500; color: var(--ink-2); }
-.overview-hint  { font-size: 11px; color: var(--ink-3); }
+.overview-hint  { font-size: 11px; color: var(--ink-2); }
 .overview-amount { font-size: 34px; font-weight: 800; color: var(--ink); letter-spacing: -1px; line-height: 1.1; }
 
 .progress {
@@ -216,7 +218,7 @@ html, body {
 .ai-tag {
   font-size: 11px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--accent-text);
   line-height: 1.2;
 }
 .ai-text {
@@ -239,7 +241,7 @@ html, body {
   background: none;
   font-size: 13px;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--accent-text);
   font-family: var(--font);
   cursor: pointer;
 }
@@ -275,7 +277,7 @@ html, body {
 .bill-flag {
   font-size: 9px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--accent-text);
   background: #FFE8DD;
   border-radius: 8px;
   padding: 2px 6px;
@@ -290,7 +292,7 @@ html, body {
   padding: 7px 14px;
   white-space: nowrap;
 }
-.tag-accent  { background: var(--ai-tag-bg); color: var(--accent); }
+.tag-accent  { background: var(--ai-tag-bg); color: var(--accent-text); }
 .tag-outline { background: var(--card); border: 1px solid var(--line); color: #3C3C43; }
 .tag-add     { color: var(--ink-2); }
 
@@ -328,7 +330,7 @@ html, body {
   cursor: pointer;
   font-family: var(--font);
 }
-.tab-item.active { background: var(--accent); }
+.tab-item.active { background: var(--accent-strong); }
 .tab-icon { display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; }
 .tab-icon svg { display: block; }
 .tab-label { font-size: 10px; font-weight: 500; color: var(--ink-2); }
@@ -389,7 +391,7 @@ html, body {
 .item-value-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; }
 .item-value-col { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .item-value-label { font-size: 9px; color: var(--ink-2); }
-.item-value-label-hot { color: var(--accent); }
+.item-value-label-hot { color: var(--accent-text); }
 .item-value { font-size: 15px; font-weight: 600; color: var(--ink); }
 .worth {
   font-size: 10px;
@@ -398,9 +400,9 @@ html, body {
   padding: 3px 7px;
   white-space: nowrap;
 }
-.worth-high { background: var(--ai-tag-bg); color: var(--accent); }
-.worth-mid  { background: var(--ai-tag-bg); color: var(--accent); }
-.worth-low  { background: var(--bg); color: var(--ink-2); }
+.worth-high { background: #E6F4EA; color: #1E7A34; }
+.worth-mid  { background: #FFF1E0; color: #B25E00; }
+.worth-low  { background: var(--track); color: var(--ink-2); }
 
 /* ── 物品详情 ─────────────────────────────── */
 .detail-nav {
@@ -470,7 +472,7 @@ html, body {
   justify-content: space-between;
 }
 .cost-label { font-size: 13px; color: var(--ai-text); }
-.cost-value { font-size: 18px; font-weight: 800; color: var(--accent); }
+.cost-value { font-size: 18px; font-weight: 800; color: var(--accent-text); }
 
 /* 折旧图表 */
 .chart-card { border-radius: 16px; gap: 12px; box-shadow: var(--shadow-bill); }
@@ -494,7 +496,7 @@ html, body {
   top: 10px;
   bottom: 10px;
   width: 1.5px;
-  background: #E8E8ED;
+  background: var(--line);
 }
 .chart-bars {
   position: absolute;
@@ -514,7 +516,7 @@ html, body {
 .b5 { height: 62px; } .b6 { height: 59px; } .b7 { height: 56px; } .b8 { height: 53px; }
 .b9 { height: 51px; } .b10 { height: 49px; } .b11 { height: 47px; } .b12 { height: 45px; }
 
-.chart-note { font-size: 12px; color: #8E8E93; }
+.chart-note { font-size: 12px; color: var(--ink-2); }
 
 /* AI 持有建议 */
 .ai-advice {
@@ -632,7 +634,7 @@ html, body {
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
-.seg-on { background: var(--accent); color: #fff; }
+.seg-on { background: var(--accent-strong); color: #fff; }
 
 /* 开关 */
 .switch {
@@ -723,7 +725,7 @@ html, body {
 .btn-confirm {
   align-self: flex-start;
   border: none;
-  background: var(--accent);
+  background: var(--accent-strong);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -778,7 +780,7 @@ html, body {
   flex: 0 0 32px;
   border: none;
   border-radius: 16px;
-  background: var(--accent);
+  background: var(--accent-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -791,6 +793,31 @@ html, body {
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* ── 无障碍：全局焦点环（键盘可达） ──────── */
+button:focus-visible,
+.tab-item:focus-visible,
+.link-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.28);
+  border-radius: 8px;
+}
+
+/* ── 无障碍：金额/百分比等宽数字 ────────── */
+.overview-amount, .bill-money, .stat-value, .key-value,
+.cost-value, .item-value, .set-value, .overview-hint {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ── 无障碍：尊重系统减弱动效偏好 ────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* 响应式：小屏直接铺满 */

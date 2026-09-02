@@ -8,7 +8,8 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "web": "turbo dev --filter=@lifolio/web",
-    "mobile": "turbo dev --filter=@lifolio/mobile"
+    "mobile": "turbo dev --filter=@lifolio/mobile",
+    "tokens": "node packages/tokens/scripts/build-css.mjs"
   },
   "devDependencies": {
     "turbo": "^2.3.3",

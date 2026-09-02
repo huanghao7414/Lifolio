@@ -35,7 +35,7 @@ export default function RegisterPage() {
     <div className="card p-8 space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold">创建账户</h1>
-        <p className="text-sm text-gray-500 mt-1">开始量化你的生活</p>
+        <p className="text-sm text-ink-2 mt-1">开始量化你的生活</p>
       </div>
 
       <form onSubmit={handleRegister} className="space-y-4">
@@ -46,7 +46,7 @@ export default function RegisterPage() {
             value={name}
             onChange={e => setName(e.target.value)}
             required
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
           />
         </div>
         <div>
@@ -56,7 +56,7 @@ export default function RegisterPage() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
           />
         </div>
         <div>
@@ -67,7 +67,7 @@ export default function RegisterPage() {
             onChange={e => setPassword(e.target.value)}
             required
             minLength={8}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
           />
         </div>
         {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -76,9 +76,9 @@ export default function RegisterPage() {
         </button>
       </form>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-ink-2">
         已有账户？{' '}
-        <Link href="/login" className="text-brand font-semibold">登录</Link>
+        <Link href="/login" className="text-accent-text font-semibold">登录</Link>
       </p>
     </div>
   );

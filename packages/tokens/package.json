@@ -1,0 +1,25 @@
+{
+  "name": "@lifolio/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./tokens.json": "./tokens.json",
+    "./tokens.css": "./tokens.css"
+  },
+  "files": ["dist", "tokens.json", "tokens.css"],
+  "scripts": {
+    "build": "node scripts/build-css.mjs && tsup src/index.ts --format cjs,esm --dts",
+    "dev": "node scripts/build-css.mjs && tsup src/index.ts --format cjs,esm --dts --watch",
+    "tokens:css": "node scripts/build-css.mjs"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}

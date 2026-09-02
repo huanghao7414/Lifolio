@@ -53,7 +53,7 @@ export default function ItemDetailScreen() {
         </View>
         <View style={[styles.statCard, { flex: 1.2 }]}>
           <Text style={styles.statLabel}>当前估值</Text>
-          <Text style={[styles.statValue, { color: Colors.brand }]}>
+          <Text style={[styles.statValue, { color: Colors.brandText }]}>
             ¥{(item.estimated_current_value ?? item.purchase_price).toLocaleString()}
           </Text>
         </View>

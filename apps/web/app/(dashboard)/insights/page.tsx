@@ -38,7 +38,7 @@ export default function InsightsPage() {
               key={p}
               onClick={() => setPeriod(p)}
               className={`text-sm px-3 py-1.5 rounded-xl font-medium transition-colors ${
-                period === p ? 'bg-brand text-white' : 'text-gray-500 hover:bg-surface'
+                period === p ? 'bg-accent-strong text-white' : 'text-ink-2 hover:bg-surface'
               }`}
             >
               {p === 'current_month' ? '本月' : '上月'}
@@ -50,13 +50,13 @@ export default function InsightsPage() {
       {/* Value Score */}
       {score && (
         <div className="card text-center py-6">
-          <p className="text-sm text-gray-400 mb-2">生活价值评分</p>
-          <p className="text-6xl font-bold text-brand">{Math.round(score.score)}</p>
-          <p className="text-xs text-gray-400 mt-1">满分 100 分</p>
+          <p className="text-sm text-ink-2 mb-2">生活价值评分</p>
+          <p className="text-6xl font-bold text-accent">{Math.round(score.score)}</p>
+          <p className="text-xs text-ink-2 mt-1">满分 100 分</p>
           <div className="grid grid-cols-4 gap-3 mt-4 pt-4 border-t border-gray-100">
             {Object.entries(score.breakdown).map(([key, val]) => (
               <div key={key} className="text-center">
-                <p className="text-xs text-gray-400">{
+                <p className="text-xs text-ink-2">{
                   { savings_rate: '储蓄', spend_diversity: '多样性', asset_utilization: '利用率', budget_adherence: '预算' }[key]
                 }</p>
                 <p className="font-semibold text-sm">{Math.round(val as number)}</p>
@@ -76,15 +76,15 @@ export default function InsightsPage() {
             <div className="card space-y-3">
               {report.categories_breakdown.map(cat => (
                 <div key={cat.category} className="flex items-center gap-3">
-                  <span className="text-sm w-10 text-gray-500">{cat.category}</span>
+                  <span className="text-sm w-10 text-ink-2">{cat.category}</span>
                   <div className="flex-1 bg-surface rounded-full h-2">
                     <div
-                      className="h-2 rounded-full bg-brand"
+                      className="h-2 rounded-full bg-accent"
                       style={{ width: `${cat.percentage}%` }}
                     />
                   </div>
                   <span className="text-sm font-medium w-20 text-right">
-                    ¥{cat.amount.toLocaleString()} <span className="text-gray-400">({cat.percentage.toFixed(0)}%)</span>
+                    ¥{cat.amount.toLocaleString()} <span className="text-ink-2">({cat.percentage.toFixed(0)}%)</span>
                   </span>
                 </div>
               ))}

@@ -31,12 +31,12 @@ function ItemCard({ item }: { item: Item }) {
           : '📦'}
       </div>
       <p className="font-semibold text-sm truncate">{item.name}</p>
-      {item.brand && <p className="text-xs text-gray-400 truncate">{item.brand}</p>}
+      {item.brand && <p className="text-xs text-ink-2 truncate">{item.brand}</p>}
       <div className="flex items-center justify-between mt-2">
-        <span className="text-sm font-medium text-brand">
+        <span className="text-sm font-medium text-accent-text">
           ¥{(item.estimated_current_value ?? item.purchase_price).toLocaleString()}
         </span>
-        <span className="text-xs text-gray-400">-{depPct}%</span>
+        <span className="text-xs text-ink-2">-{depPct}%</span>
       </div>
       {rec && (
         <span className={`inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full ${rec.cls}`}>
@@ -50,7 +50,7 @@ function ItemCard({ item }: { item: Item }) {
 export default function ItemGrid({ items }: { items: Item[] }) {
   if (!items.length) {
     return (
-      <div className="card text-center py-12 text-sm text-gray-400">
+      <div className="card text-center py-12 text-sm text-ink-2">
         <p className="text-3xl mb-2">📦</p>
         暂无物品记录
       </div>

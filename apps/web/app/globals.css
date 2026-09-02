@@ -2,30 +2,155 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 设计令牌由 packages/tokens/tokens.json 生成，在 app/layout.tsx 中引入 */
+
 @layer base {
-  :root {
-    --brand: #FF4500;
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
   body {
-    @apply font-sans;
+    @apply font-sans text-ink-1 bg-canvas;
+  }
+
+  /* 金额、百分比、日期统一等宽数字，保证列表纵向对齐 */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  /* 全局焦点环 —— WCAG 2.4.7，键盘可达性 */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+    border-radius: var(--radius-sm);
+  }
+
+  /* 尊重系统的减弱动效偏好 */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
 @layer components {
-  .ai-card {
-    @apply bg-ai-bg border border-ai-border rounded-2xl p-4;
-  }
-  .ai-tag {
-    @apply inline-flex items-center gap-1 text-xs font-semibold text-brand;
-  }
+  /* ─────────── 卡片 ─────────── */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-4;
+    @apply bg-surface border border-line rounded-card shadow-1 p-5;
   }
+  .card-tight {
+    @apply bg-surface border border-line rounded-lg shadow-1 p-1.5;
+  }
+
+  /* ─────────── 按钮 ─────────── */
+  /* 注意：底色用 accent-strong(#D63600) 而非 brand(#FF4500)，
+     后者白字只有 3.44:1，不达 WCAG AA 正文标准 */
   .btn-primary {
-    @apply bg-brand text-white rounded-xl px-5 py-2.5 font-semibold text-sm
-           hover:bg-brand-light active:scale-95 transition-all;
+    @apply inline-flex items-center justify-center gap-2
+           bg-accent-strong text-white rounded-md px-5 py-2.5
+           text-callout font-semibold
+           hover:brightness-110 active:scale-[.97]
+           transition-all duration-fast ease-swift
+           min-h-touch
+           disabled:opacity-40 disabled:pointer-events-none;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-surface text-ink-1 border border-line rounded-md px-4 py-2.5
+           text-callout font-medium
+           hover:bg-canvas active:scale-[.97]
+           transition-all duration-fast ease-swift
+           min-h-touch
+           disabled:opacity-40 disabled:pointer-events-none;
   }
   .btn-ghost {
-    @apply text-brand font-semibold text-sm hover:bg-brand-dim rounded-xl px-3 py-1.5 transition-colors;
+    @apply inline-flex items-center justify-center gap-1
+           text-accent-text text-callout font-semibold
+           hover:bg-accent-soft rounded-md px-3 py-2
+           transition-colors duration-fast ease-swift;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2
+           text-danger text-callout font-semibold
+           hover:bg-danger-soft rounded-md px-4 py-2.5
+           transition-colors duration-fast ease-swift
+           min-h-touch;
+  }
+
+  /* ─────────── AI 内容容器 ─────────── */
+  /* 硬约束：任何 AI 生成文本必须放在本容器内，并带 ✦ AI 标记 */
+  .ai-card {
+    @apply bg-accent-wash border border-accent-line rounded-md p-4;
+  }
+  .ai-tag {
+    @apply inline-flex items-center gap-1 text-micro font-semibold text-accent-text;
+  }
+  .ai-text {
+    @apply text-caption leading-[18px] text-accent-ink;
+  }
+  .ai-action {
+    @apply inline-flex items-center bg-accent-strong text-white
+           text-caption font-semibold rounded-full px-4 py-2
+           hover:brightness-110 transition-all duration-fast ease-swift;
+  }
+
+  /* ─────────── 标签 Chip ─────────── */
+  .chip {
+    @apply inline-flex items-center rounded-full px-3.5 py-[7px]
+           text-caption font-medium transition-colors duration-fast ease-swift;
+  }
+  .chip-on {
+    @apply chip bg-accent-soft text-accent-text font-semibold;
+  }
+  .chip-off {
+    @apply chip bg-surface border border-line text-ink-1 hover:border-ink-3;
+  }
+
+  /* ─────────── 徽标 ─────────── */
+  /* 分档同时显示数字，不靠颜色单通道 —— 色弱用户同样可读 */
+  .badge {
+    @apply inline-flex items-center rounded-sm px-2 py-[3px] text-micro font-bold;
+  }
+  .badge-high   { @apply badge bg-success-soft text-success; }
+  .badge-mid    { @apply badge bg-warning-soft text-warning; }
+  .badge-low    { @apply badge bg-track text-ink-2; }
+  .badge-danger { @apply badge bg-danger-soft text-danger; }
+  .badge-info   { @apply badge bg-info-soft text-info; }
+
+  /* ─────────── 表单 ─────────── */
+  .input {
+    @apply w-full bg-surface border border-line rounded-md px-4 py-3
+           text-body text-ink-1 placeholder:text-ink-3
+           focus:border-accent focus:shadow-focus
+           transition-all duration-fast ease-swift;
+  }
+  .input-error {
+    @apply input border-danger focus:border-danger;
+  }
+
+  /* ─────────── 数据展示 ─────────── */
+  .progress {
+    @apply w-full h-1.5 bg-track rounded-full overflow-hidden;
+  }
+  .progress > span {
+    @apply block h-1.5 rounded-full bg-gradient-to-r from-accent to-accent-line;
+  }
+  .skeleton {
+    @apply bg-track rounded-sm animate-skeleton;
+  }
+
+  /* ─────────── 列表行 ─────────── */
+  .list-row {
+    @apply flex items-center gap-3 px-3.5 py-2.5 min-h-touch;
+  }
+  .list-row + .list-row {
+    @apply border-t border-track;
   }
 }

@@ -49,7 +49,7 @@ export default function ResetPasswordPage() {
     <div className="card p-8 space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold">设置新密码</h1>
-        <p className="text-sm text-gray-500 mt-1">请输入您的新密码</p>
+        <p className="text-sm text-ink-2 mt-1">请输入您的新密码</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -61,7 +61,7 @@ export default function ResetPasswordPage() {
             onChange={e => setPassword(e.target.value)}
             required
             minLength={8}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
             placeholder="至少 8 位"
           />
         </div>
@@ -72,7 +72,7 @@ export default function ResetPasswordPage() {
             value={confirm}
             onChange={e => setConfirm(e.target.value)}
             required
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
             placeholder="再次输入密码"
           />
         </div>

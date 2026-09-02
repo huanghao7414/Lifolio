@@ -49,13 +49,13 @@ export default function LoginPage() {
       <div className="card p-8 space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold">重置密码</h1>
-          <p className="text-sm text-gray-500 mt-1">输入邮箱，我们将发送重置链接</p>
+          <p className="text-sm text-ink-2 mt-1">输入邮箱，我们将发送重置链接</p>
         </div>
 
         {resetSent ? (
           <div className="text-center space-y-4">
             <p className="text-green-600 text-sm">重置链接已发送，请检查邮箱。</p>
-            <button onClick={() => { setMode('login'); setResetSent(false); }} className="text-brand text-sm font-semibold">
+            <button onClick={() => { setMode('login'); setResetSent(false); }} className="text-accent-text text-sm font-semibold">
               返回登录
             </button>
           </div>
@@ -68,7 +68,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
                 placeholder="you@example.com"
               />
             </div>
@@ -76,7 +76,7 @@ export default function LoginPage() {
             <button type="submit" disabled={loading} className="btn-primary w-full text-center">
               {loading ? '发送中...' : '发送重置链接'}
             </button>
-            <button type="button" onClick={() => setMode('login')} className="w-full text-center text-sm text-gray-500">
+            <button type="button" onClick={() => setMode('login')} className="w-full text-center text-sm text-ink-2">
               返回登录
             </button>
           </form>
@@ -89,7 +89,7 @@ export default function LoginPage() {
     <div className="card p-8 space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold">Lifolio</h1>
-        <p className="text-sm text-gray-500 mt-1">量化你的生活，看见你的价值</p>
+        <p className="text-sm text-ink-2 mt-1">量化你的生活，看见你的价值</p>
       </div>
 
       <form onSubmit={handleLogin} className="space-y-4">
@@ -100,7 +100,7 @@ export default function LoginPage() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
             placeholder="you@example.com"
           />
         </div>
@@ -111,7 +111,7 @@ export default function LoginPage() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
             placeholder="••••••••"
           />
         </div>
@@ -121,9 +121,9 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <div className="flex justify-between text-sm text-gray-500">
-        <button onClick={() => setMode('reset')} className="text-brand font-medium">忘记密码？</button>
-        <Link href="/register" className="text-brand font-semibold">注册账户</Link>
+      <div className="flex justify-between text-sm text-ink-2">
+        <button onClick={() => setMode('reset')} className="text-accent-text font-medium">忘记密码？</button>
+        <Link href="/register" className="text-accent-text font-semibold">注册账户</Link>
       </div>
     </div>
   );

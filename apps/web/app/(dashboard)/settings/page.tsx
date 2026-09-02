@@ -58,7 +58,7 @@ export default function SettingsPage() {
             type="number"
             value={profile.monthly_budget ?? ''}
             onChange={e => setProfile(p => ({ ...p, monthly_budget: Number(e.target.value) }))}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
             placeholder="8000"
           />
         </div>
@@ -69,7 +69,7 @@ export default function SettingsPage() {
             type="text"
             value={profile.currency ?? 'CNY'}
             onChange={e => setProfile(p => ({ ...p, currency: e.target.value }))}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent focus:shadow-focus"
             maxLength={3}
           />
         </div>
@@ -86,7 +86,7 @@ export default function SettingsPage() {
                 key={value}
                 onClick={() => setProfile(p => ({ ...p, ai_tone: value }))}
                 className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
-                  profile.ai_tone === value ? 'bg-brand text-white' : 'bg-surface text-gray-600'
+                  profile.ai_tone === value ? 'bg-accent-strong text-white' : 'bg-surface text-gray-600'
                 }`}
               >
                 {label}
@@ -103,7 +103,7 @@ export default function SettingsPage() {
                 key={value}
                 onClick={() => setProfile(p => ({ ...p, ai_push_frequency: value }))}
                 className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
-                  profile.ai_push_frequency === value ? 'bg-brand text-white' : 'bg-surface text-gray-600'
+                  profile.ai_push_frequency === value ? 'bg-accent-strong text-white' : 'bg-surface text-gray-600'
                 }`}
               >
                 {label}

@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   itemName: { fontSize: 14, fontWeight: '600', color: Colors.text },
   itemBrand: { fontSize: 12, color: Colors.textTertiary, marginTop: 1 },
   itemValueRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 },
-  itemValue: { fontSize: 14, fontWeight: '600', color: Colors.brand },
+  itemValue: { fontSize: 14, fontWeight: '600', color: Colors.brandText, fontVariant: ['tabular-nums'] },
   itemDep: { fontSize: 11, color: Colors.textTertiary },
   recBadge: { alignSelf: 'flex-start', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2, marginTop: 4 },
   recText: { fontSize: 11, fontWeight: '600' },

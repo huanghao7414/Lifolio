@@ -52,7 +52,7 @@ export default function LoginScreen() {
         </View>
 
         <Pressable onPress={() => router.push('/(auth)/register')} style={styles.switchLink}>
-          <Text style={styles.switchText}>还没有账户？<Text style={{ color: Colors.brand }}>注册</Text></Text>
+          <Text style={styles.switchText}>还没有账户？<Text style={{ color: Colors.brandText }}>注册</Text></Text>
         </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>

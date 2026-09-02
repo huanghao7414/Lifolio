@@ -39,30 +39,30 @@ export default async function ItemDetailPage({ params }: Props) {
         )}
         <div>
           <h1 className="text-xl font-bold">{item.name}</h1>
-          {item.brand && <p className="text-sm text-gray-400">{item.brand} {item.model}</p>}
-          <p className="text-sm text-gray-400 mt-1">购入 {purchaseDate.toLocaleDateString('zh-CN')} · 持有 {daysHeld} 天</p>
+          {item.brand && <p className="text-sm text-ink-2">{item.brand} {item.model}</p>}
+          <p className="text-sm text-ink-2 mt-1">购入 {purchaseDate.toLocaleDateString('zh-CN')} · 持有 {daysHeld} 天</p>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         <div className="card text-center">
-          <p className="text-xs text-gray-400 mb-1">购入价</p>
+          <p className="text-xs text-ink-2 mb-1">购入价</p>
           <p className="font-bold text-lg">¥{Number(item.purchase_price).toLocaleString()}</p>
         </div>
         <div className="card text-center">
-          <p className="text-xs text-gray-400 mb-1">当前估值</p>
-          <p className="font-bold text-lg text-brand">
+          <p className="text-xs text-ink-2 mb-1">当前估值</p>
+          <p className="font-bold text-lg text-accent-text">
             ¥{Number(item.estimated_current_value ?? item.purchase_price).toLocaleString()}
           </p>
         </div>
         <div className="card text-center">
-          <p className="text-xs text-gray-400 mb-1">使用次数</p>
+          <p className="text-xs text-ink-2 mb-1">使用次数</p>
           <p className="font-bold text-lg">{item.usage_count}</p>
         </div>
       </div>
 
       {costPerUse && (
-        <p className="text-sm text-gray-500 text-center">每次使用成本约 ¥{costPerUse}</p>
+        <p className="text-sm text-ink-2 text-center">每次使用成本约 ¥{costPerUse}</p>
       )}
 
       {item.ai_hold_recommendation && (

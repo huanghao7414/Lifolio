@@ -26,25 +26,26 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-56 flex flex-col border-r border-gray-100 bg-white shrink-0">
+    <aside className="w-[248px] flex flex-col border-r border-line bg-surface shrink-0">
       <div className="px-5 py-6">
-        <span className="font-bold text-lg tracking-tight">Lifolio</span>
-        <p className="text-xs text-gray-400 mt-0.5">量化人生簿</p>
+        <span className="font-bold text-h3 tracking-tight">Lifolio</span>
+        <p className="text-caption text-ink-2 mt-0.5">量化人生簿</p>
       </div>
 
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 px-3 space-y-1" aria-label="主导航">
         {NAV.map(({ href, label, icon }) => (
           <Link
             key={href}
             href={href}
+            aria-current={pathname.startsWith(href) ? 'page' : undefined}
             className={clsx(
-              'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-md text-body font-medium min-h-touch transition-colors duration-fast ease-swift',
               pathname.startsWith(href)
-                ? 'bg-brand text-white'
-                : 'text-gray-600 hover:bg-surface',
+                ? 'bg-accent-soft text-accent-text font-semibold'
+                : 'text-ink-2 hover:bg-canvas hover:text-ink-1',
             )}
           >
-            <span className="text-base">{icon}</span>
+            <span className="text-base" aria-hidden="true">{icon}</span>
             {label}
           </Link>
         ))}

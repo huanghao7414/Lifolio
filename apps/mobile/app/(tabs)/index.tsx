@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   section: { gap: 10 },
   sectionHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   sectionTitle: { fontSize: 15, fontWeight: '600', color: Colors.text },
-  link: { fontSize: 13, color: Colors.brand, fontWeight: '600' },
+  link: { fontSize: 13, color: Colors.brandText, fontWeight: '600' },
   card: { backgroundColor: Colors.surface, borderRadius: 16, overflow: 'hidden' },
   empty: { padding: 24, textAlign: 'center', color: Colors.textTertiary, fontSize: 13 },
 });

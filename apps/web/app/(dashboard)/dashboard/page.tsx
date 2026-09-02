@@ -31,7 +31,7 @@ export default async function DashboardPage() {
     <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
       <header>
         <h1 className="text-2xl font-bold">首页</h1>
-        <p className="text-sm text-gray-400 mt-0.5">
+        <p className="text-sm text-ink-2 mt-0.5">
           {today.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' })}
         </p>
       </header>
