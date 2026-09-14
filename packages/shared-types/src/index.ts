@@ -2,7 +2,7 @@
 
 export interface UserProfile {
   id: string;
-  email: string;
+  email?: string;
   display_name?: string;
   avatar_url?: string;
   currency: string;
@@ -11,6 +11,54 @@ export interface UserProfile {
   ai_push_frequency: 'realtime' | 'daily' | 'weekly';
   created_at: string;
   updated_at: string;
+}
+
+export interface AuthProvider {
+  id: 'google' | 'wechat';
+  label: string;
+  enabled: boolean;
+  provider: 'google' | `custom:${string}` | null;
+  status: 'enabled' | 'not_configured';
+}
+
+export interface AuthConfig {
+  email_enabled: boolean;
+  phone_enabled: boolean;
+  phone_method: 'sms_otp';
+  providers: AuthProvider[];
+}
+
+export interface AuthIdentity {
+  id: string;
+  email: string | null;
+  phone: string | null;
+  display_name: string | null;
+  providers: string[];
+  is_admin: boolean;
+}
+
+export interface AdminOverview {
+  checked_at: string;
+  version: string;
+  status: 'ok' | 'degraded';
+  totals: Record<'users' | 'new_users_7d' | 'transactions' | 'items' | 'conversations' | 'messages' | 'ai_configs', number | null>;
+  services: { name: string; status: string; detail: string }[];
+  recent_users: { id: string; display_name: string | null; created_at: string }[];
+  authentication: AuthConfig;
+  metrics: {
+    scope: 'current_process'; started_at: string; uptime_seconds: number;
+    requests: number; server_errors: number; average_latency_ms: number; p95_latency_ms: number;
+    latency_sample_count: number;
+    routes: { route: string; requests: number; server_errors: number }[];
+  };
+}
+
+/** Normalize common Chinese mobile input; other countries must include their calling code. */
+export function normalizePhone(input: string): string {
+  const compact = input.replace(/[\s()-]/g, '');
+  const value = /^1[3-9]\d{9}$/.test(compact) ? `+86${compact}` : compact;
+  if (!/^\+[1-9]\d{7,14}$/.test(value)) throw new Error('请输入带国家区号的手机号，例如 +8613812345678');
+  return value;
 }
 
 // ─── Category ──────────────────────────────────────────────────────────────
@@ -170,7 +218,79 @@ export interface ChatMessage {
 
 export interface ChatRequest {
   messages: ChatMessage[];
+  conversation_id?: string;
 }
+
+export interface Conversation {
+  id: string;
+  user_id: string;
+  title: string;
+  message_count: number;
+  last_message_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ConversationMessage {
+  id: string;
+  conversation_id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  model: string | null;
+  created_at: string;
+}
+
+export interface ConversationDetail {
+  conversation: Conversation;
+  messages: ConversationMessage[];
+}
+
+export type LLMProvider = 'openai' | 'azure_openai' | 'deepseek' | 'moonshot' | 'qwen' | 'zhipu' | 'openrouter' | 'custom';
+
+export interface LLMSettings {
+  provider: LLMProvider;
+  base_url: string | null;
+  chat_model: string;
+  vision_model: string | null;
+  temperature: number;
+  is_enabled: boolean;
+  has_key: boolean;
+  key_hint: string | null;
+  last_verified_at: string | null;
+  last_error: string | null;
+  source: 'user' | 'global' | 'unconfigured';
+  updated_at: string | null;
+}
+
+export interface LLMSettingsUpdate {
+  provider?: LLMProvider;
+  base_url?: string;
+  /** Omit to keep the saved key; an empty string clears it. */
+  api_key?: string;
+  chat_model?: string;
+  vision_model?: string;
+  temperature?: number;
+  is_enabled?: boolean;
+}
+
+export interface LLMTestResult {
+  ok: boolean;
+  model: string;
+  base_url: string | null;
+}
+
+/** Editable starter values; model availability depends on the provider account. */
+export const LLM_PROVIDER_PRESETS: ReadonlyArray<{
+  value: LLMProvider; label: string; base_url: string; chat_model: string;
+}> = [
+  { value: 'openai', label: 'OpenAI', base_url: 'https://api.openai.com/v1', chat_model: 'gpt-4o' },
+  { value: 'deepseek', label: 'DeepSeek', base_url: 'https://api.deepseek.com/v1', chat_model: 'deepseek-chat' },
+  { value: 'moonshot', label: 'Moonshot', base_url: 'https://api.moonshot.cn/v1', chat_model: 'moonshot-v1-8k' },
+  { value: 'qwen', label: '通义千问', base_url: 'https://dashscope.aliyuncs.com/compatible-mode/v1', chat_model: 'qwen-plus' },
+  { value: 'zhipu', label: '智谱', base_url: 'https://open.bigmodel.cn/api/paas/v4', chat_model: 'glm-4' },
+  { value: 'openrouter', label: 'OpenRouter', base_url: 'https://openrouter.ai/api/v1', chat_model: 'openai/gpt-4o' },
+  { value: 'custom', label: '自定义兼容接口', base_url: '', chat_model: '' },
+];
 
 // ─── Insights / Reports ────────────────────────────────────────────────────
 
@@ -231,26 +351,4 @@ export interface DepreciationData {
 export interface ApiError {
   detail: string;
   code?: string;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  per_page: number;
-  has_more: boolean;
-}
-
-// ─── Dashboard ─────────────────────────────────────────────────────────────
-
-export interface DashboardSummary {
-  monthly_spend: number;
-  monthly_budget?: number;
-  budget_remaining?: number;
-  budget_used_pct?: number;
-  total_assets_value: number;
-  savings_rate: number;
-  ai_summary: string;
-  recent_transactions: Transaction[];
-  unread_insights: AIInsight[];
 }

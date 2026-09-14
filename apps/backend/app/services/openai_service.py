@@ -1,70 +1,102 @@
-"""OpenAI client wrapper with streaming and structured output support."""
+"""LLM 调用封装：流式输出、结构化输出、视觉理解。
+
+所有入口都接受 user_id，由 llm_service 决定用「用户自配」还是「服务端兜底」。
+未传 user_id 时走全局配置，仅供内部任务（如定时报告）使用。
+"""
 from __future__ import annotations
 
 import json
+import logging
 from collections.abc import AsyncGenerator
-from openai import AsyncOpenAI
+
 from app.core.config import settings
+from app.services.llm_service import (
+    LLMConfig, LLMNotConfigured, InvalidLLMConfig, get_llm_client,
+    _global_config, create_llm_client, provider_error_message,
+)
 
-_client: AsyncOpenAI | None = None
+logger = logging.getLogger(__name__)
 
 
-def get_openai() -> AsyncOpenAI:
-    global _client
-    if _client is None:
-        _client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-    return _client
+def _resolve(user_id: str | None):
+    """返回 (client, config)。用户未配置且服务端无兜底时抛 LLMNotConfigured。"""
+    if user_id:
+        return get_llm_client(user_id)
+    cfg = _global_config()
+    return create_llm_client(cfg), cfg
 
 
 async def chat_completion(
     messages: list[dict],
     model: str | None = None,
     response_format: dict | None = None,
-    temperature: float = 0.3,
+    temperature: float | None = None,
+    user_id: str | None = None,
 ) -> str:
     """Single-shot chat completion, returns full text."""
-    client = get_openai()
+    client, cfg = _resolve(user_id)
     kwargs: dict = {
-        "model": model or settings.OPENAI_MODEL,
+        "model": model or cfg.chat_model,
         "messages": messages,
-        "temperature": temperature,
+        "temperature": cfg.temperature if temperature is None else temperature,
     }
     if response_format:
         kwargs["response_format"] = response_format
 
-    response = await client.chat.completions.create(**kwargs)
-    return response.choices[0].message.content or ""
+    try:
+        response = await client.chat.completions.create(**kwargs)
+        return response.choices[0].message.content or ""
+    except Exception as exc:
+        raise InvalidLLMConfig(provider_error_message(exc)) from None
+    finally:
+        await client.close()
 
 
 async def stream_chat_completion(
     messages: list[dict],
     model: str | None = None,
-    temperature: float = 0.7,
+    temperature: float | None = None,
+    user_id: str | None = None,
+    config: LLMConfig | None = None,
 ) -> AsyncGenerator[str, None]:
     """Yields text delta chunks for SSE streaming."""
-    client = get_openai()
-    stream = await client.chat.completions.create(
-        model=model or settings.OPENAI_MODEL,
-        messages=messages,
-        temperature=temperature,
-        stream=True,
-    )
-    async for chunk in stream:
-        delta = chunk.choices[0].delta.content
-        if delta:
-            yield delta
+    client, cfg = (create_llm_client(config), config) if config else _resolve(user_id)
+    stream = None
+    try:
+        stream = await client.chat.completions.create(
+            model=model or cfg.chat_model,
+            messages=messages,
+            temperature=cfg.temperature if temperature is None else temperature,
+            stream=True,
+        )
+        async for chunk in stream:
+            if not chunk.choices:
+                continue
+            delta = chunk.choices[0].delta.content
+            if delta:
+                yield delta
+    except Exception as exc:
+        raise InvalidLLMConfig(provider_error_message(exc)) from None
+    finally:
+        try:
+            if stream is not None:
+                await stream.close()
+        finally:
+            await client.close()
 
 
 async def vision_completion(
     image_b64: str,
     prompt: str,
     model: str | None = None,
+    user_id: str | None = None,
 ) -> str:
-    """Analyze a base64-encoded image with GPT-4o Vision."""
-    client = get_openai()
-    response = await client.chat.completions.create(
-        model=model or settings.OPENAI_VISION_MODEL,
-        messages=[
+    """Analyze a base64-encoded image with a vision-capable model."""
+    client, cfg = _resolve(user_id)
+    try:
+        response = await client.chat.completions.create(
+            model=model or cfg.vision_model or cfg.chat_model,
+            messages=[
             {
                 "role": "user",
                 "content": [
@@ -75,11 +107,15 @@ async def vision_completion(
                     },
                 ],
             }
-        ],
-        temperature=0.2,
-        max_tokens=1500,
-    )
-    return response.choices[0].message.content or ""
+            ],
+            temperature=0.2,
+            max_tokens=1500,
+        )
+        return response.choices[0].message.content or ""
+    except Exception as exc:
+        raise InvalidLLMConfig(provider_error_message(exc)) from None
+    finally:
+        await client.close()
 
 
 def parse_json_response(text: str) -> dict:
@@ -89,3 +125,13 @@ def parse_json_response(text: str) -> dict:
         lines = text.split("\n")
         text = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
     return json.loads(text)
+
+
+__all__ = [
+    "chat_completion",
+    "stream_chat_completion",
+    "vision_completion",
+    "parse_json_response",
+    "LLMConfig",
+    "LLMNotConfigured",
+]

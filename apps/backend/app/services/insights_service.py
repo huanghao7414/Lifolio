@@ -25,6 +25,7 @@ async def generate_monthly_summary(
     categories: list[dict],
     savings_rate: float,
     tone: str = "casual",
+    user_id: str | None = None,
 ) -> str:
     category_text = "\n".join(
         f"- {c['category']}: ¥{c['amount']:.0f} ({c['percentage']:.0f}%)" for c in categories
@@ -36,10 +37,16 @@ async def generate_monthly_summary(
         f"消费分类:\n{category_text}"
     )
     system = _REPORT_SYSTEM.format(tone=tone)
-    return await chat_completion(
-        messages=[{"role": "system", "content": system}, {"role": "user", "content": user_msg}],
-        temperature=0.7,
-    )
+    fallback = f"本期共支出 ¥{total_spend:.0f}。" + (f"月预算 ¥{monthly_budget:.0f}，请结合分类明细查看消费进度。" if monthly_budget else "设置月预算可更清楚地跟踪消费进度。")
+    try:
+        result = await chat_completion(
+            messages=[{"role": "system", "content": system}, {"role": "user", "content": user_msg}],
+            temperature=0.7,
+            user_id=user_id,
+        )
+        return result.strip() or fallback
+    except Exception:
+        return fallback
 
 
 async def generate_score_suggestions(
@@ -47,6 +54,7 @@ async def generate_score_suggestions(
     savings_rate: float,
     budget_adherence: float,
     asset_utilization: float,
+    user_id: str | None = None,
 ) -> list[str]:
     user_msg = (
         f"生活价值评分: {score:.0f}/100\n"
@@ -54,22 +62,24 @@ async def generate_score_suggestions(
         f"预算执行率: {budget_adherence:.0f}%\n"
         f"资产利用率: {asset_utilization:.0f}%"
     )
-    raw = await chat_completion(
-        messages=[
-            {"role": "system", "content": _SCORE_SYSTEM},
-            {"role": "user", "content": user_msg},
-        ],
-        response_format={"type": "json_object"},
-        temperature=0.5,
-    )
     import json
     try:
+        raw = await chat_completion(
+            messages=[
+                {"role": "system", "content": _SCORE_SYSTEM},
+                {"role": "user", "content": user_msg},
+            ],
+            response_format={"type": "json_object"},
+            temperature=0.5,
+            user_id=user_id,
+        )
         data = json.loads(raw)
-        if isinstance(data, list):
-            return data
-        return data.get("suggestions", [])
+        suggestions = data if isinstance(data, list) else data.get("suggestions", [])
+        if suggestions and all(isinstance(item, str) for item in suggestions):
+            return suggestions[:3]
     except Exception:
-        return ["增加储蓄比例", "控制非必要消费", "提高物品使用频率"]
+        pass
+    return ["设定并定期检查月预算", "回顾非必要消费", "定期整理闲置物品"]
 
 
 def compute_value_score(

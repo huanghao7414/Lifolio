@@ -2,9 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getAPIClient } from '@/lib/api';
 import clsx from 'clsx';
 
 const NAV = [
@@ -16,14 +15,12 @@ const NAV = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const [aiOpen, setAiOpen] = useState(false);
-
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/login');
-  };
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    let active = true;
+    getAPIClient().getIdentity().then(identity => { if (active) setIsAdmin(identity.is_admin); }).catch(() => {});
+    return () => { active = false; };
+  }, []);
 
   return (
     <aside className="w-[248px] flex flex-col border-r border-line bg-surface shrink-0">
@@ -49,6 +46,7 @@ export default function Sidebar() {
             {label}
           </Link>
         ))}
+        {isAdmin && <Link href="/admin" className="flex items-center gap-3 px-3 py-3 text-sm text-ink-2 hover:bg-canvas rounded-md">▤ 服务管理后台</Link>}
       </nav>
 
       {/* AI FAB */}

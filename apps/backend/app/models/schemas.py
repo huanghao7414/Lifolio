@@ -1,7 +1,7 @@
 from __future__ import annotations
 from datetime import date
 from typing import Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 # ─── Transaction ─────────────────────────────────────────────────────────────
@@ -136,11 +136,117 @@ class ParseResult(BaseModel):
 
 class ChatMessage(BaseModel):
     role: Literal["user", "assistant"]
-    content: str
+    content: str = Field(..., min_length=1, max_length=20000)
+
+    @field_validator("content")
+    @classmethod
+    def nonblank_content(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("消息不能为空")
+        return value
 
 
 class ChatRequest(BaseModel):
-    messages: list[ChatMessage] = Field(..., min_length=1)
+    messages: list[ChatMessage] = Field(..., min_length=1, max_length=100)
+    # 传了就落库续聊；不传则按一次性对话处理（不持久化）
+    conversation_id: Optional[str] = None
+
+    @model_validator(mode="after")
+    def last_message_is_user(self):
+        if self.messages[-1].role != "user":
+            raise ValueError("最后一条消息必须来自用户")
+        return self
+
+
+# ─── 会话持久化 ──────────────────────────────────────────────────────────────
+
+class ConversationCreate(BaseModel):
+    title: Optional[str] = Field(None, max_length=200)
+
+
+class ConversationUpdate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+
+    @field_validator("title")
+    @classmethod
+    def nonblank_title(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("会话名称不能为空")
+        return value.strip()
+
+
+class ConversationOut(BaseModel):
+    id: str
+    user_id: str
+    title: str
+    message_count: int
+    last_message_at: str
+    created_at: str
+    updated_at: str
+
+
+class ChatMessageOut(BaseModel):
+    id: str
+    conversation_id: str
+    role: str
+    content: str
+    model: Optional[str]
+    created_at: str
+
+
+class ConversationDetail(BaseModel):
+    conversation: ConversationOut
+    messages: list[ChatMessageOut]
+
+
+# ─── 用户自配 LLM ────────────────────────────────────────────────────────────
+
+LLMProvider = Literal[
+    "openai", "azure_openai", "deepseek", "moonshot", "qwen", "zhipu", "openrouter", "custom"
+]
+
+# 常见厂商的默认 base_url，用户选 provider 后可自动填充
+PROVIDER_DEFAULTS: dict[str, tuple[str, str]] = {
+    "openai":       ("https://api.openai.com/v1",              "gpt-4o"),
+    "deepseek":     ("https://api.deepseek.com/v1",            "deepseek-chat"),
+    "moonshot":     ("https://api.moonshot.cn/v1",             "moonshot-v1-8k"),
+    "qwen":         ("https://dashscope.aliyuncs.com/compatible-mode/v1", "qwen-plus"),
+    "zhipu":        ("https://open.bigmodel.cn/api/paas/v4",   "glm-4"),
+    "openrouter":   ("https://openrouter.ai/api/v1",           "openai/gpt-4o"),
+}
+
+
+class LLMSettingsUpdate(BaseModel):
+    """更新用户 LLM 配置。
+
+    api_key 语义：
+      * 传入非空字符串 → 加密后覆盖存储
+      * 传入空字符串   → 清除已存 Key（回落服务端兜底）
+      * 不传（None）   → 保持原样
+    """
+    provider: Optional[LLMProvider] = None
+    base_url: Optional[str] = Field(None, max_length=2048)
+    api_key: Optional[str] = Field(None, max_length=4096, repr=False)
+    chat_model: Optional[str] = Field(None, max_length=80)
+    vision_model: Optional[str] = Field(None, max_length=80)
+    temperature: Optional[float] = Field(None, ge=0, le=2)
+    is_enabled: Optional[bool] = None
+
+
+class LLMSettingsOut(BaseModel):
+    """注意：永远不包含明文 API Key，只有掩码 key_hint 与 has_key 标志。"""
+    provider: str
+    base_url: Optional[str]
+    chat_model: str
+    vision_model: Optional[str]
+    temperature: float
+    is_enabled: bool
+    has_key: bool
+    key_hint: Optional[str]
+    last_verified_at: Optional[str]
+    last_error: Optional[str]
+    source: Literal["user", "global", "unconfigured"]
+    updated_at: Optional[str]
 
 
 # ─── Insights ────────────────────────────────────────────────────────────────

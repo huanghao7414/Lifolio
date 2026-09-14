@@ -47,7 +47,7 @@ Rules:
 """
 
 
-async def parse_input(req: ParseRequest) -> ParseResult:
+async def parse_input(req: ParseRequest, user_id: str | None = None) -> ParseResult:
     today = date.today().isoformat()
     user_message = f"Today is {today}.\n\nUser input: {req.input}"
 
@@ -58,6 +58,7 @@ async def parse_input(req: ParseRequest) -> ParseResult:
         ],
         response_format={"type": "json_object"},
         temperature=0.1,
+        user_id=user_id,
     )
 
     try:

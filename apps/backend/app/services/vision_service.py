@@ -38,9 +38,9 @@ def _encode_image(image_bytes: bytes) -> str:
     return base64.b64encode(image_bytes).decode("utf-8")
 
 
-async def analyze_receipt(image_bytes: bytes) -> ParseResult:
+async def analyze_receipt(image_bytes: bytes, user_id: str | None = None) -> ParseResult:
     b64 = _encode_image(image_bytes)
-    raw = await vision_completion(b64, _RECEIPT_PROMPT)
+    raw = await vision_completion(b64, _RECEIPT_PROMPT, user_id=user_id)
     try:
         data = parse_json_response(raw)
         return ParseResult(
@@ -52,9 +52,9 @@ async def analyze_receipt(image_bytes: bytes) -> ParseResult:
         return ParseResult(type="question", answer="Could not read receipt.", confidence=0.0)
 
 
-async def analyze_product(image_bytes: bytes) -> ParseResult:
+async def analyze_product(image_bytes: bytes, user_id: str | None = None) -> ParseResult:
     b64 = _encode_image(image_bytes)
-    raw = await vision_completion(b64, _PRODUCT_PROMPT)
+    raw = await vision_completion(b64, _PRODUCT_PROMPT, user_id=user_id)
     try:
         data = parse_json_response(raw)
         return ParseResult(
@@ -66,14 +66,14 @@ async def analyze_product(image_bytes: bytes) -> ParseResult:
         return ParseResult(type="question", answer="Could not identify product.", confidence=0.0)
 
 
-async def analyze_image(image_bytes: bytes, hint: str = "auto") -> ParseResult:
+async def analyze_image(image_bytes: bytes, hint: str = "auto", user_id: str | None = None) -> ParseResult:
     """Route to receipt or product analyzer based on hint or content."""
     if hint == "receipt":
-        return await analyze_receipt(image_bytes)
+        return await analyze_receipt(image_bytes, user_id=user_id)
     if hint == "product":
-        return await analyze_product(image_bytes)
+        return await analyze_product(image_bytes, user_id=user_id)
     # Auto-detect: try receipt first (most common use case)
-    result = await analyze_receipt(image_bytes)
+    result = await analyze_receipt(image_bytes, user_id=user_id)
     if result.confidence < 0.4:
-        result = await analyze_product(image_bytes)
+        result = await analyze_product(image_bytes, user_id=user_id)
     return result

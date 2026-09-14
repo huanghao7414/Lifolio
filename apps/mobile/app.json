@@ -4,7 +4,6 @@
     "slug": "lifolio",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "scheme": "lifolio",
     "splash": {
@@ -26,14 +25,7 @@
     "plugins": [
       "expo-router",
       "expo-camera",
-      "expo-image-picker",
-      [
-        "expo-speech",
-        { "microphonePermission": "用于语音输入记账" }
-      ]
-    ],
-    "extra": {
-      "eas": { "projectId": "your-eas-project-id" }
-    }
+      "expo-image-picker"
+    ]
   }
 }

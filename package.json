@@ -2,11 +2,14 @@
   "name": "lifolio",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@11.25.0",
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
+    "typecheck": "pnpm --filter './packages/*' build && pnpm --filter @lifolio/web exec tsc --noEmit && pnpm --filter @lifolio/mobile exec tsc --noEmit",
+    "test:client": "pnpm --filter @lifolio/api-client test",
     "web": "turbo dev --filter=@lifolio/web",
     "mobile": "turbo dev --filter=@lifolio/mobile",
     "tokens": "node packages/tokens/scripts/build-css.mjs"

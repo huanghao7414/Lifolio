@@ -77,6 +77,7 @@ async def get_report(
         categories=[c.model_dump() for c in cats],
         savings_rate=savings_rate,
         tone=tone,
+        user_id=user_id,
     )
 
     # Compute value score for the period
@@ -110,7 +111,7 @@ async def get_value_score(user_id: str = Depends(get_current_user_id)):
 
     trans_res = supabase.table("transactions").select(
         "amount, categories(name)"
-    ).eq("user_id", user_id).gte("transaction_date", str(start)).execute()
+    ).eq("user_id", user_id).eq("transaction_type", "expense").gte("transaction_date", str(start)).lte("transaction_date", str(today)).execute()
     transactions = trans_res.data or []
     total_spend = sum(float(t["amount"]) for t in transactions)
 
@@ -131,7 +132,8 @@ async def get_value_score(user_id: str = Depends(get_current_user_id)):
 
     score_obj = compute_value_score(savings_rate, budget_used_pct, cats, unused, len(items))
     suggestions = await generate_score_suggestions(
-        score_obj.score, savings_rate, score_obj.breakdown.budget_adherence, score_obj.breakdown.asset_utilization
+        score_obj.score, savings_rate, score_obj.breakdown.budget_adherence, score_obj.breakdown.asset_utilization,
+        user_id=user_id,
     )
     score_obj.suggestions = suggestions
     return score_obj

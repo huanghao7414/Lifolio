@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { getAPIClient } from '@/lib/api';
 import type { InsightReport, ValueScore } from '@lifolio/shared-types';
 import AIInsightCard from '@/components/ai/AIInsightCard';
-import AssetTimeline from '@/components/charts/AssetTimeline';
 
 export default function InsightsPage() {
   const [report, setReport] = useState<InsightReport | null>(null);
@@ -91,7 +90,7 @@ export default function InsightsPage() {
             </div>
           </section>
 
-          {score?.suggestions?.length > 0 && (
+          {score && score.suggestions.length > 0 && (
             <section>
               <h2 className="font-semibold mb-3">AI 建议</h2>
               <ul className="space-y-2">
