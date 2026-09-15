@@ -16,6 +16,28 @@ loaded.paths = module.paths;
 loaded._compile(compiled, filename);
 const { LifolioAPIClient, APIError } = loaded.exports;
 
+test('public login config does not depend on an authenticated Supabase session', async t => {
+  let tokenRead = false;
+  const api = new LifolioAPIClient({ baseUrl: 'https://lifolio.test', getToken: async () => {
+    tokenRead = true;
+    throw new Error('Auth service unavailable');
+  } });
+  t.mock.method(globalThis, 'fetch', async (url, options) => {
+    assert.equal(url, 'https://lifolio.test/api/auth/config');
+    assert.equal(options.headers.Authorization, undefined);
+    assert.equal(options.headers['Content-Type'], undefined);
+    return Response.json({ email_enabled: true, phone_enabled: false, providers: [] });
+  });
+  assert.equal((await api.getAuthConfig()).email_enabled, true);
+  assert.equal(tokenRead, false);
+});
+
+test('API network failures are distinct from HTTP and login errors', async t => {
+  t.mock.method(globalThis, 'fetch', async () => { throw new TypeError('Failed to fetch'); });
+  const api = new LifolioAPIClient({ baseUrl: 'https://lifolio.test', getToken: () => null });
+  await assert.rejects(api.getAuthConfig(), error => error instanceof APIError && error.code === 'network_error' && error.status === 0);
+});
+
 const messages = [{ role: 'user', content: '今天午饭花了 28 元' }];
 const client = (streamFetch) => new LifolioAPIClient({
   baseUrl: 'https://lifolio.test/', getToken: async () => 'test-token', streamFetch,

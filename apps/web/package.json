@@ -6,6 +6,7 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
+    "test:auth": "node --test tests/auth-errors.test.cjs",
     "lint": "next lint"
   },
   "dependencies": {

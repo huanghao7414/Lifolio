@@ -87,9 +87,17 @@ export class LifolioAPIClient {
     return headers;
   }
 
-  private async request<T>(path: string, options: RequestInit = {}): Promise<T> {
-    const headers = await this.buildHeaders(options.headers as HeadersInit);
-    const res = await fetch(`${this.baseUrl}${path}`, { ...options, headers });
+  private async request<T>(path: string, options: RequestInit = {}, authenticated = true): Promise<T> {
+    const headers = authenticated
+      ? await this.buildHeaders(options.headers as HeadersInit)
+      : { Accept: 'application/json', ...options.headers };
+    let res: Response;
+    try {
+      res = await fetch(`${this.baseUrl}${path}`, { ...options, headers });
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') throw error;
+      throw new APIError(0, '无法连接应用服务，请检查后端地址或网络连接后重试。', 'network_error');
+    }
     if (!res.ok) throw await responseError(res);
     if (res.status === 204) return undefined as T;
     return res.json() as Promise<T>;
@@ -98,7 +106,8 @@ export class LifolioAPIClient {
   // ─── Dashboard ────────────────────────────────────────────────────────────
 
   async getAuthConfig(): Promise<AuthConfig> {
-    return this.request('/api/auth/config');
+    // This public endpoint must remain available even if an old Auth session cannot refresh.
+    return this.request('/api/auth/config', {}, false);
   }
 
   async getIdentity(): Promise<AuthIdentity> {

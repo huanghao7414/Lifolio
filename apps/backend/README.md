@@ -4,7 +4,7 @@ Python 3.12+ / FastAPI / Supabase. Run commands from `apps/backend`.
 
 ```sh
 uv sync
-cp .env.example .env
+test -f .env || cp .env.example .env
 # Fill the Supabase values and encryption secret locally.
 uv run uvicorn main:app --reload --port 8000
 ```
@@ -12,7 +12,8 @@ uv run uvicorn main:app --reload --port 8000
 The API can start without `OPENAI_API_KEY`. Users can configure their own provider in
 `/api/settings/llm`. Dashboard and insight calculations remain usable when AI is not
 configured or a provider fails. Explicit AI actions return a readable configuration error.
-The Supabase project must use JWT tokens compatible with the current HS256 verifier.
+The API validates bearer tokens with the configured Supabase Auth `/auth/v1/user`
+endpoint, including projects using rotated signing keys.
 
 ## Database migration and deployment
 
@@ -23,6 +24,7 @@ SQL editor, using an administrative database connection:
 2. `supabase/migrations/002_fixes_and_income.sql`
 3. `supabase/migrations/003_conversations_and_llm_config.sql`
 4. `supabase/migrations/004_ai_history_hardening.sql`
+5. `supabase/migrations/005_identity_profiles.sql`
 
 For an existing deployment, apply only missing migrations. Migration 004 is required
 by the new backend, even if 003 has already been applied. It adds a stable message
@@ -37,8 +39,26 @@ For old rows sharing an identical timestamp, their exact original order cannot b
 recovered; the new sequence makes subsequent reads deterministic.
 
 No migration is applied automatically on application startup. Deploy migrations before
-restarting the backend, then deploy the web/mobile clients. Check `/health` and
-`/api/docs`. A running health endpoint alone does not prove the migrations were applied.
+restarting the backend, then deploy the web/mobile clients. Check `/health`, `/ready`
+and `/api/docs`. A running health endpoint alone does not prove the migrations were applied.
+
+## Authentication and administration
+
+The public `/api/auth/config` describes enabled methods. Supabase Auth issues sessions;
+the clients use email/password or SMS OTP. The API verifies every bearer token against
+Supabase Auth and uses the verified user UUID for database ownership. To enable SMS,
+configure Phone Auth and an SMS provider in Supabase, then set `AUTH_PHONE_ENABLED=true`.
+Enable Google in Supabase and set `AUTH_GOOGLE_ENABLED=true` once its OAuth redirect
+URLs are configured. WeChat requires a compatible custom OAuth/OIDC broker registered
+in Supabase; `AUTH_WECHAT_PROVIDER=custom:<id>` enables its client entry only after
+that setup. The flags alone do not create provider credentials.
+
+The `/api/admin/overview` endpoint is read-only and requires a UUID listed in
+`ADMIN_USER_IDS`. Empty is deny-all. It returns aggregate table counts, recent profile
+display names, and bounded current-process request/latency metrics; it does not return
+AI keys, messages or financial rows. `/ready` checks database connectivity without
+revealing table data. Multi-worker deployments need a shared monitoring backend if
+cross-worker metrics are required.
 
 Set a dedicated, random `LLM_KEY_ENCRYPTION_KEY` in the backend secret manager and
 keep it stable across workers and releases. User API keys are Fernet-encrypted using
